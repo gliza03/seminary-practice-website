@@ -14,11 +14,11 @@ app.get("/memoryGame.ejs", (req, res) => res.render("memoryGame"));
 const knex = require("knex") ({
     client : "pg",
     connection : {
-        host : "localhost",
-        user : "postgres",
-        password : "Gabbo2003#",
-        database : "doctrinalmastery",
-        port : 5432
+        host : process.env.RDS_HOSTNAME || "localhost",
+        user : process.env.RDS_USERNAME || "postgres",
+        password : process.env.RDS_PASSWORD || "Gabbo2003#",
+        database : process.env.RDS_DB_NAME || "doctrinalmastery",
+        port : process.env.RDS_PORT || 5432
     }
 })
 
