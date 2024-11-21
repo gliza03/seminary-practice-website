@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        /* Basic styling for the body and layout */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Title styling */
+        h1 {
+            font-size: 36px;
+            color: #333;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Game container styling */
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 80%;
+            max-width: 800px;
+            background-color: white;
+            border: 2px solid #003366; /* Navy border */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        /* Card styling */
+        .card {
+            width: 100px;
+            height: 150px;
+            margin: 10px;
+            background-color: #003366; /* Navy blue */
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .card.flipped {
+            background-color: white;
+            color: #003366;
+        }
+
+        /* Game message styling */
+        .game-message {
+            font-size: 18px;
+            color: #003366;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Form styling */
+        .game-form {
+            width: 80%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Dropdown styling */
+        .dropdown {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Button styling */
+        .submit-button {
+            font-size: 18px;
+            padding: 10px 20px;
+            color: white;
+            background-color: #003366;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-button:hover {
+            background-color: #002244;
+        }
+
+        /* Back link styling */
+        .back-link {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #003366;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Title at the top of the page -->
+    <h1>Memory Game</h1>
+
+    <!-- Form to handle user selection and game submission -->
+    <form class="game-form" action="/submit-score" method="POST">
+        <!-- Dropdown for name selection -->
+        <select class="dropdown" name="username" required>
+            <option value="" disabled selected>Select your name</option>
+            <option value="User1">User1</option>
+            <option value="User2">User2</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <!-- Game container to hold the cards -->
+        <div class="game-container">
+            <!-- Cards will be dynamically inserted here -->
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <!-- Add more cards as needed -->
+        </div>
+
+        <!-- Game message placeholder -->
+        <div class="game-message">Match the cards to win!</div><br>
+
+        <!-- Submit button for the form -->
+        <button type="submit" class="submit-button">Submit Score</button><br>
+    </form>
+
+    <!-- Link back to the main page -->
+
+</body>
+</html>
