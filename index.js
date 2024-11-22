@@ -23,4 +23,13 @@ const knex = require("knex") ({
     }
 })
 
+app.get("/memoryGame.ejs", async (req, res) => { 
+    try { const students = await knex("student").select("student_code_name"); 
+        res.render("memoryGame", { students });
+     } catch (error) { 
+        console.error("Error fetching students:", error); 
+        res.status(500).send("Internal server error.");
+     }
+});
+
 app.listen(port, () => console.log("Express App has started and server is listening!"));

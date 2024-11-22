@@ -117,9 +117,9 @@
         <!-- Dropdown for name selection -->
         <select class="dropdown" name="username" required>
             <option value="" disabled selected>Select your name</option>
-            <option value="User1">User1</option>
-            <option value="User2">User2</option>
-            <!-- Add more options as needed -->
+            <% students.forEach(function(student) { %>
+                <option value="<%= student.student_code_name %>"><%= student.student_code_name %></option>
+            <% }); %>
         </select>
 
         <!-- Game container to hold the cards -->
