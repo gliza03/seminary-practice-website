@@ -4,7 +4,7 @@ let path = require("path");
 const port = process.env.PORT || 5500;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-// Gabe is testing things!
+
 // Define paths
 app.get("/", (req, res) => res.render("index"));
 app.get("/login.ejs", (req, res) => res.render("login"));
