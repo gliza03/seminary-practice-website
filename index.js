@@ -16,15 +16,16 @@ const knex = require("knex") ({
     connection : {
         host : process.env.RDS_HOSTNAME,
         user : process.env.RDS_USERNAME,
-        password : 'merickson14',
+        password : process.env.RDS_PASSWORD,
         database : process.env.RDS_DB_NAME,
         port : process.env.RDS_PORT,
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
     }
 })
 
-app.get("/memoryGame", async (req, res) => {
-    let students = knex.select("student_code_name").from('student');
+app.get("/memoryGame", (req, res) => {
+    knex('student')
+    .then(students => {});
     res.render("memoryGame", { students });
 });
 
