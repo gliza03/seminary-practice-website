@@ -28,6 +28,7 @@ app.get("/memoryGame.ejs", async (req, res) => {
         res.render("memoryGame", { student });
      } catch (error) { 
         console.error("Error fetching students:", error); 
+        console.log('HELP');
         res.status(500).send("Internal server error.");
      }
 });
