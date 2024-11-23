@@ -24,7 +24,7 @@ const knex = require("knex") ({
 })
 
 app.get("/memoryGame", (req, res) => {
-    knex('student')
+    knex('student').select("student_code_name")
     .then(students => {});
     res.render("memoryGame", { students });
 });
