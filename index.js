@@ -7,9 +7,9 @@ app.set("views", path.join(__dirname, "views"));
 
 // Define paths
 app.get("/", (req, res) => res.render("index"));
-// app.get("/login.ejs", (req, res) => res.render("login"));
-// app.get("/index.ejs", (req, res) => res.render("index"));
-// app.get("/memoryGame.ejs", (req, res) => res.render("memoryGame"));
+app.get("/login.ejs", (req, res) => res.render("login"));
+app.get("/index.ejs", (req, res) => res.render("index"));
+app.get("/memoryGame.ejs", (req, res) => res.render("memoryGame"));
 
 const knex = require("knex") ({
     client : "pg",
