@@ -16,7 +16,7 @@ const knex = require("knex") ({
     connection : {
         host : process.env.RDS_HOSTNAME,
         user : process.env.RDS_USERNAME,
-        password : process.env.RDS_PASSWORD,
+        password : 'merickson14',
         database : process.env.RDS_DB_NAME,
         port : process.env.RDS_PORT,
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
@@ -24,7 +24,7 @@ const knex = require("knex") ({
 })
 
 app.get("/memoryGame", async (req, res) => {
-    const students = knex.select("student_code_name").from('student');
+    let students = knex.select("student_code_name").from('student');
     res.render("memoryGame", { students });
 });
 

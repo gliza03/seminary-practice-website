@@ -95,7 +95,7 @@
         <select class="dropdown" name="username" required>
             <option value="" disabled selected>Select your name</option>
             <% for (let iCount = 0; iCount < students.length; iCount++) {%>
-                <option value="<%= student[iCount].student_code_name %>"><%= students[iCount].student_code_name %></option>
+                <option value="<%= students[iCount].student_code_name %>"><%= students[iCount].student_code_name %></option>
             <% }; %>
         </select>
         <div class="game-container">
