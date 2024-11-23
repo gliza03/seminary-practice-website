@@ -14,18 +14,18 @@ app.get("/memoryGame.ejs", (req, res) => res.render("memoryGame"));
 const knex = require("knex") ({
     client : "pg",
     connection : {
-        host : process.env.RDS_HOSTNAME || 'localhost',
-        user : process.env.RDS_USERNAME || 'postgres',
-        password : process.env.RDS_PASSWORD || 'Gabbo2003#',
-        database : process.env.RDS_DB_NAME || 'seminary',
-        port : process.env.RDS_PORT || '5432',
+        host : process.env.RDS_HOSTNAME,
+        user : process.env.RDS_USERNAME,
+        password : process.env.RDS_PASSWORD,
+        database : process.env.RDS_DB_NAME,
+        port : process.env.RDS_PORT,
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
     }
 })
 
 app.get("/memoryGame", async (req, res) => {
     try {
-        const students = await knex("student").select("student_code_name");
+        const students = await knex.select("student_code_name").from('employees');
         res.render("memoryGame", { students });
     } catch (error) {
         console.error("Error fetching students:", error);

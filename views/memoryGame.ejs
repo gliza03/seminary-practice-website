@@ -94,9 +94,9 @@
     <form class="game-form" action="/submit-score" method="POST">
         <select class="dropdown" name="username" required>
             <option value="" disabled selected>Select your name</option>
-            <% students.forEach(function(student) { %>
-                <option value="<%= student.student_code_name %>"><%= student.student_code_name %></option>
-            <% }); %>
+            <% for (let iCount = 0; iCount < students.length; iCount++) {%>
+                <option value="<%= student.student_code_name %>"><%= student[iCount].student_code_name %></option>
+            <% }; %>
         </select>
         <div class="game-container">
             <div class="card"></div>
