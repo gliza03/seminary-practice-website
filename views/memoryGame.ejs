@@ -117,7 +117,7 @@
         <!-- Dropdown for name selection -->
         <select class="dropdown" name="username" required>
             <option value="" disabled selected>Select your name</option>
-            <% students.forEach(function(student) { %>
+            <% student.forEach(function(student) { %>
                 <option value="<%= student.student_code_name %>"><%= student.student_code_name %></option>
             <% }); %>
         </select>
