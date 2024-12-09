@@ -1,116 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Previous head and container structure remains the same -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Game</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            font-size: 36px;
-            color: #333;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .game-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 80%;
-            max-width: 800px;
-            background-color: white;
-            border: 2px solid #003366;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-        }
-        .card {
-            width: 100px;
-            height: 150px;
-            margin: 10px;
-            background-color: #003366;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .card.flipped {
-            background-color: white;
-            color: #003366;
-        }
-        .game-message {
-            font-size: 18px;
-            color: #003366;
-            margin-top: 20px;
-            text-align: center;
-        }
-        .game-form {
-            width: 80%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .dropdown {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .submit-button {
-            font-size: 18px;
-            padding: 10px 20px;
-            color: white;
-            background-color: #003366;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .submit-button:hover {
-            background-color: #002244;
-        }
-        .back-link {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #003366;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>Scripture Memory Game</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1>Memory Game</h1>
-    <form class="game-form" action="/submit-score" method="POST">
-        <select class="dropdown" name="username" required>
-            <option value="" disabled selected>Select your name</option>
-            <% for (let iCount = 0; iCount < students.length; iCount++) {%>
-                <option value="<%= students[iCount].student_code_name %>"><%= students[iCount].student_code_name %></option>
-            <% }; %>
-        </select>
-        <div class="game-container">
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
+    <!-- Previous HTML structure remains the same -->
+    <div class="game-container">
+        <h1>Scripture Memory Game</h1>
+        
+        <div class="user-selection">
+            <select id="studentSelect" required>
+                <option value="">Select your name</option>
+                <% student.forEach(student => { %>
+                    <option value="<%= student.student_id %>"><%= student.student_code_name %></option>
+                <% }); %>
+            </select>
         </div>
-        <div class="game-message">Match the cards to win!</div><br>
-        <button type="submit" class="submit-button">Submit Score</button><br>
-    </form>
-    <a href="/" class="back-link">Back to Doctrinal Mastery Review</a>
+
+        <div class="game-stats">
+            <div id="attempts">Attempts: 0</div>
+            <div id="matches">Matches: 0</div>
+            <div id="score">Score: 0%</div>
+        </div>
+
+        <div class="game-board"></div>
+
+        <div id="gameResults" class="game-results" style="display: none;">
+            <h2>Game Complete!</h2>
+            <div id="finalScore"></div>
+            <div id="passStatus"></div>
+            <button id="playAgain">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state variables remain the same
+        let selectedCards = [];
+        let matchedPairs = [];
+        let attempts = 0;
+        let correctMatches = 0;
+        let gameStarted = false;
+        let currentScriptures = [];
+        let isProcessing = false;
+        let currentScore = 1000; // Starting score
+
+        // Initialize game with preview
+        async function initializeGame() {
+            const response = await fetch('/api/random-scriptures');
+            const scriptures = await response.json();
+            currentScriptures = scriptures;
+            
+            const cardPairs = scriptures.flatMap(scripture => [
+                {
+                    id: scripture.scripture_id,
+                    type: 'reference',
+                    content: scripture.scripture_reference,
+                    matchId: scripture.scripture_id
+                },
+                {
+                    id: scripture.scripture_id,
+                    type: 'description',
+                    content: scripture.description,
+                    matchId: scripture.scripture_id
+                }
+            ]);
+            
+            const shuffledCards = shuffleArray(cardPairs);
+            
+            const gameBoard = document.querySelector('.game-board');
+            gameBoard.innerHTML = '';
+            shuffledCards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.dataset.index = index;
+                cardElement.dataset.matchId = card.matchId;
+                cardElement.dataset.content = card.content;
+                cardElement.addEventListener('click', handleCardClick);
+                gameBoard.appendChild(cardElement);
+            });
+
+            // Show all cards for 2 seconds
+            const allCards = document.querySelectorAll('.card');
+            allCards.forEach(card => {
+                card.classList.add('revealed');
+                card.textContent = card.dataset.content;
+            });
+
+            // Hide cards after 2 seconds
+            setTimeout(() => {
+                allCards.forEach(card => {
+                    card.classList.remove('revealed');
+                    card.textContent = '';
+                });
+                isProcessing = false;
+            }, 2000);
+
+            currentScore = 1000; // Reset score for new game
+            updateScore();
+        }
+
+        // Updated handle card click function
+        async function handleCardClick(event) {
+            if (isProcessing) return;
+            
+            if (!gameStarted) {
+                const studentSelect = document.getElementById('studentSelect');
+                if (!studentSelect.value) {
+                    alert('Please select your name first!');
+                    return;
+                }
+                gameStarted = true;
+            }
+
+            const card = event.target;
+            
+            if (card.classList.contains('matched') || selectedCards.includes(card)) {
+                return;
+            }
+            
+            card.classList.add('revealed');
+            card.textContent = card.dataset.content;
+            selectedCards.push(card);
+            
+            if (selectedCards.length === 2) {
+                isProcessing = true;
+                attempts++;
+                document.getElementById('attempts').textContent = `Attempts: ${attempts}`;
+                
+                const [card1, card2] = selectedCards;
+                if (card1.dataset.matchId === card2.dataset.matchId) {
+                    correctMatches++;
+                    matchedPairs.push(card1.dataset.matchId);
+                    selectedCards.forEach(card => {
+                        card.classList.add('matched');
+                    });
+                    document.getElementById('matches').textContent = `Matches: ${correctMatches}`;
+                    selectedCards = [];
+                    isProcessing = false;
+                    updateScore();
+                    await checkGameCompletion();
+                } else {
+                    // Smaller penalty for wrong matches
+                    currentScore = Math.max(0, currentScore - 50); // Only subtract 50 points instead of more
+                    updateScore();
+                    
+                    setTimeout(() => {
+                        selectedCards.forEach(card => {
+                            card.classList.remove('revealed');
+                            card.textContent = '';
+                        });
+                        selectedCards = [];
+                        isProcessing = false;
+                    }, 1000);
+                }
+            }
+        }
+
+        // Updated score calculation
+        function updateScore() {
+            document.getElementById('score').textContent = `Score: ${currentScore}`;
+        }
+
+        // Updated checkGameCompletion function
+        async function checkGameCompletion() {
+            if (correctMatches === 4) {
+                const finalScore = currentScore;
+                const passed = finalScore >= 500; // Pass if score is 500 or higher
+                
+                document.getElementById('gameResults').style.display = 'block';
+                document.getElementById('finalScore').textContent = `Final Score: ${finalScore}`;
+                document.getElementById('passStatus').textContent = passed ? 'PASSED!' : 'Try Again';
+                
+                try {
+                    const studentSelect = document.getElementById('studentSelect');
+                    const studentId = studentSelect.value;
+                    
+                    if (!studentId) {
+                        throw new Error('No student selected');
+                    }
+
+                    const nextAttemptResponse = await fetch(`/api/next-attempt-number/${studentId}`);
+                    if (!nextAttemptResponse.ok) {
+                        throw new Error('Failed to get next attempt number');
+                    }
+                    const attemptData = await nextAttemptResponse.json();
+                    
+                    await saveResults({
+                        student_id: studentId,
+                        scripture_ids: currentScriptures.map(s => s.scripture_id),
+                        pass: passed,
+                        grade: finalScore,
+                        attempt_num: attemptData.nextAttemptNumber
+                    });
+                    
+                } catch (error) {
+                    console.error('Error in game completion:', error);
+                    alert('Error saving game results. Please try again.');
+                }
+            }
+        }
+
+        // Previous utility functions remain the same
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', initializeGame);
+        
+        document.getElementById('playAgain').addEventListener('click', () => {
+            gameStarted = false;
+            selectedCards = [];
+            matchedPairs = [];
+            attempts = 0;
+            correctMatches = 0;
+            isProcessing = true; // Set to true during initial preview
+            document.getElementById('attempts').textContent = 'Attempts: 0';
+            document.getElementById('matches').textContent = 'Matches: 0';
+            document.getElementById('gameResults').style.display = 'none';
+            initializeGame();
+        });
+
+        async function saveResults(data) {
+    try {
+        console.log('Sending data to server:', data);
+        
+        const response = await fetch('/api/save-results', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                student_id: Number(data.student_id),
+                scripture_ids: data.scripture_ids,
+                pass: Boolean(data.pass),
+                grade: Number(data.grade),
+                attempt_num: Number(data.attempt_num)
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Server error:', errorData);
+            throw new Error(errorData.message || 'Server error');
+        }
+
+        const result = await response.json();
+        console.log('Save successful:', result);
+        return result;
+    } catch (error) {
+        console.error('Failed to save results:', error);
+        alert('Failed to save game results: ' + error.message);
+        throw error;
+    }
+}
+    </script>
 </body>
 </html>

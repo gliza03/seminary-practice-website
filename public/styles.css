@@ -1,0 +1,93 @@
+/* Game Container */
+.game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* User Selection */
+.user-selection {
+    margin: 20px 0;
+}
+
+.user-selection select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Game Stats */
+.game-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Game Board */
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* Cards */
+.card {
+    aspect-ratio: 2/3;
+    background-color: #2c3e50;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    font-size: 14px;
+    color: transparent;
+    transition: all 0.3s ease;
+}
+
+.card.revealed {
+    background-color: #3498db;
+    color: white;
+}
+
+.card.matched {
+    background-color: #27ae60;
+    cursor: default;
+}
+
+/* Game Results */
+.game-results {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.game-results h2 {
+    margin: 0 0 15px 0;
+}
+
+#finalScore, #passStatus {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+#playAgain {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#playAgain:hover {
+    background-color: #2980b9;
+}
