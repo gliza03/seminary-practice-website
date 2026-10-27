@@ -1,53 +1,36 @@
 # Seminary Memory Game
-A modern web application built with Node.js, Express.js, and PostgreSQL, featuring secure authentication and dynamic EJS-rendered views.
+
+A web app that helps seminary students memorize scriptures. Students log in, get a random set of scriptures to practice, and the app saves each attempt so they can see their progress over time.
 
 ## Features
-- **Express.js Backend** - Lightweight, efficient, and scalable server.
-- **EJS Templating** - Dynamic HTML rendering with reusable components.
-- **PostgreSQL Integration** - Using `knex.js` for structured queries.
-- **Secure Authentication** - `bcrypt` for password hashing.
-- **Environment Configuration** - `dotenv` for managing sensitive credentials.
-- **Static Assets Handling** - Serving CSS and JS from `public/`.
 
-## Installation
-### Prerequisites
-Ensure you have the following installed:
-- [Node.js](https://nodejs.org/)
-- [PostgreSQL](https://www.postgresql.org/)
+- **Login** with bcrypt-hashed passwords
+- **Memory game** that pulls random scriptures from the database (`/api/random-scriptures`)
+- **Progress tracking:** saves each student's results and attempt number (`/api/save-results`, `/api/next-attempt-number/:studentId`)
+- **Server-rendered pages** with EJS
 
-### Setup
-1. Clone this repository:
-   ```sh
-   git clone <repo-url>
-   cd <repo-folder>
-   ```
-2. Install dependencies:
-   ```sh
-   npm install
-   ```
-3. Set up environment variables:
-   ```sh
-   cp .env.example .env
-   ```
-   Edit `.env` with your database credentials.
+## Tech stack
 
-4. Run the application:
-   ```sh
-   npm start
-   ```
+| Layer | Tools |
+|---|---|
+| Server | Node.js, Express, EJS |
+| Database | PostgreSQL with Knex.js |
+| Auth & config | bcrypt, dotenv |
 
-## Project Structure
-```
-website/
-│── public/          # Static assets (CSS, JS, images)
-│── views/           # EJS templates
-│── index.js         # Main server file
-│── package.json     # Dependencies and scripts
-│── .gitignore       # Ignored files
+## Run it locally
+
+```bash
+git clone https://github.com/gliza03/seminary-practice-website.git
+cd seminary-practice-website
+npm install
 ```
 
-## Usage
-- Navigate to `http://localhost:5500` (or configured port) to access the site.
-- Modify `views/` for UI changes and `index.js` for backend logic.
+Create a `.env` file with your PostgreSQL connection details, then:
 
+```bash
+npm start
+```
 
+## Author
+
+Gabriel Liza · [gabriellizam.com](https://gabriellizam.com) · [LinkedIn](https://www.linkedin.com/in/gabriellizam)
